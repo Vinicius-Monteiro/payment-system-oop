@@ -1,0 +1,21 @@
+# Created by https://www.gitignore.io/api/visualstudiocode
+# Edit at https://www.gitignore.io/?templates=visualstudiocode
+
+### VisualStudioCode ###
+.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.settings
+.settings/*
+.classpath
+.project
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+### .class files ###
+.payment/src/system/*.class
