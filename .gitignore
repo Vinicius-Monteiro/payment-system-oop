@@ -18,4 +18,4 @@
 .history
 
 ### .class files ###
-.payment/src/system/*.class
+payment/src/system/*.class
