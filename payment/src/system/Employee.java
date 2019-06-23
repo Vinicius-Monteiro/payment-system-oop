@@ -6,12 +6,9 @@ public abstract class Employee {
 	private String paymentMethod;
 	private final int id;//handle id abstractly
 	private double payCheck;
-	private Union unionInfo;
+	public UnionInfo unionInfo = new UnionInfo();
 
-	public Employee(String name, String address, String paymentMethod, int id){
-		this.name = name;
-		this.address = address;
-		this.paymentMethod = paymentMethod;
+	public Employee(int id){
 		this.id = id;
 		this.payCheck = 0;
 	}
@@ -27,7 +24,7 @@ public abstract class Employee {
 	public void setPaymentMethod(String paymentMethod){
 		this.paymentMethod = paymentMethod;
 	}
-
+	
 	public void setPayCheck(double payCheck) {
 		this.payCheck = payCheck;
 	}
@@ -52,8 +49,13 @@ public abstract class Employee {
 		return payCheck;
 	}
 
+	public String getUnionInfo() {
+		return unionInfo.toString();
+	}
+
 	@Override
 	public String toString() {
-		return ("Empregado " + this.getName() + ", endereço " + this.getAddress() + ", ID " + this.getId());
+		return ("Empregado " + this.getName() + ", endereço " + this.getAddress() + ", método de pagamento "
+		+ this.getPaymentMethod() + ", ID " + this.getId() + ", " + this.getUnionInfo());
 	}
 }

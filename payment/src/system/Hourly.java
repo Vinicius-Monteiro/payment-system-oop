@@ -3,9 +3,8 @@ package system;
 public class Hourly extends Employee{
 	private double hourPay;
 
-	public Hourly(String name, String address, String paymentMethod, int id, double hourPay){
-		super(name, address, paymentMethod, id);
-		this.hourPay = hourPay;
+	public Hourly(int id){
+		super(id);
 	}
 
 	public void setHourPay(double hourPay){
@@ -14,5 +13,10 @@ public class Hourly extends Employee{
 
 	public double getHourPay(){
 		return this.hourPay;
+	}
+
+	@Override
+	public String toString(){
+		return super.toString() + ", salário/hora de " + this.hourPay;
 	}
 }

@@ -3,9 +3,8 @@ package system;
 public class Commissioned extends Salaried{
 	public double commission;
 
-	public Commissioned(String name, String address, String paymentMethod, int id, double salary, double commission){
-		super(name, address, paymentMethod, id, salary);
-		this.commission = commission;
+	public Commissioned(int id){
+		super(id);
 	}
 
 	public void setCommission(double commission){
@@ -14,5 +13,10 @@ public class Commissioned extends Salaried{
 
 	public double getCommission(){
 		return this.commission;
+	}
+
+	@Override
+	public String toString(){
+		return super.toString() + ", comissão de " + this.commission + "%";
 	}
 }

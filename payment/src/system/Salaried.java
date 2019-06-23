@@ -3,9 +3,8 @@ package system;
 public class Salaried extends Employee {
 	private double salary;
 
-	public Salaried(String name, String address, String paymentMethod, int id, double salary){
-		super(name, address, paymentMethod, id);
-		this.salary = salary;
+	public Salaried(int id){
+		super(id);
 	}
 
 	public void setSalary(double salary){
@@ -14,5 +13,10 @@ public class Salaried extends Employee {
 
 	public double getSalary(){
 		return this.salary;
+	}
+
+	@Override
+	public String toString(){
+		return super.toString() + ", salário mensal " + this.salary;
 	}
 }

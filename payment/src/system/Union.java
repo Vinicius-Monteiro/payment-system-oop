@@ -1,37 +1,23 @@
 package system;
+import java.util.ArrayList;
 
-public class Union {
-	private boolean belongs;
-	private int id;
-	private double fee;
+public class Union{
+	ArrayList<Employee> registeredEmployees = new ArrayList<Employee>();
+	private int unionGlobalID;
 
-	public Union(boolean belongs, int id, double fee){
-		this.belongs = belongs;
-		this.id = id;
-		this.fee = fee;
+	public Union(){
+		unionGlobalID = 1;
 	}
 
-	public void setBelongs(boolean belongs){
-		this.belongs = belongs;
+	public int getUnionGlobalID(){
+		return unionGlobalID;
 	}
 
-	public void setId(int id){
-		this.id = id;
+	public void incrementUnionGlobalID(){
+		unionGlobalID++;
 	}
 
-	public void setFee(double fee){
-		this.fee = fee;
-	}
+	public void submitServiceFee(Employee employee){
 
-	public boolean getBelongs(){
-		return this.belongs;
-	}
-
-	public int getId(){
-		return this.id;
-	}
-
-	public double getFee(){
-		return this.fee;
 	}
 }
