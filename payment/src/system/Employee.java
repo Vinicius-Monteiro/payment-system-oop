@@ -75,7 +75,7 @@ public abstract class Employee {
 	public String toString() {
 		return ("Empregado " + name + ", endereço " + address + ", método de pagamento "
 		+ paymentMethod + ", ID " + id + ", próximo contra-cheque de " + 
-		nextPaymentValue + " em " + nextPaymentDate + ", " + unionInfo.toString()) 
+		Main.sManager.getPayment(this) + " em " + nextPaymentDate + ", " + unionInfo.toString()) 
 		+ ", calendário de pagamento " + schedule.toString();
 	}
 }

@@ -41,6 +41,16 @@ public class InputHandler{
 		}
 	}
 
+	public Employee loadEmployee(Payroll payroll, String required){
+		while(true){
+			int id = Main.inputHandler.loadInt(required);
+			
+			Employee e = Main.sManager.searchByID(payroll.getEmployees(), id);
+			if(e != null) return e;
+			else System.out.println("Funcionário não encontrado");
+		}
+	}
+
 	public String loadSchedule(){
 		while(true){
 			System.out.print("\tmensal ou semanal:");

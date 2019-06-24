@@ -58,25 +58,19 @@ public class Menu {
 			System.out.print("\tO tipo do contrato:");
 			String type = Main.in.nextLine();
 			
-			if(type.equals("salaried")){
+			if(type.equals("salariado")){
 				Salaried employee = new Salaried(Main.sManager.getGlobalId());
 				employee = Main.sManager.createEmployee(employee, payroll);
-				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
-				
 				payroll.addEmployee(employee);
 			} 
-			else if(type.equals("commissioned")) {
+			else if(type.equals("comissionado")) {
 				Commissioned employee = new Commissioned(Main.cManager.getGlobalId());
 				employee = Main.cManager.createEmployee(employee, payroll);
-				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
-				
 				payroll.addEmployee(employee);
 			} 
-			else if(type.equals("hourly")) {
+			else if(type.equals("horista")) {
 				Hourly employee = new Hourly(Main.hManager.getGlobalId());
 				employee = Main.hManager.createEmployee(employee, payroll);
-				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
-				
 				payroll.addEmployee(employee);
 			} 
 			else {
@@ -86,16 +80,15 @@ public class Menu {
 		} 
 		else if(input.equals("2")) {
 			System.out.println("Forneça:");
-			int id = Main.inputHandler.loadInt("O id do funcionário:");
-			payroll.remove(id);
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			payroll.remove(e.getId());
 		} 
 		else if(input.equals("3")){
 			System.out.println("Forneça:");
-			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			
 			//checando se o empregado existe e se o casting é válido
-			Employee e = Main.hManager.searchByID(payroll.getEmployees(), new Hourly(-1), id);
-			if(e != null){
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			if(e instanceof Hourly){
 				int []arrival = Main.inputHandler.loadInt("A hora de chegada (e.g. 7 30):", 2);
 				int []exit = Main.inputHandler.loadInt("A hora de chegada (e.g. 15 20):", 2);
 				if(Main.inputHandler.checkTime(arrival, exit))
@@ -106,43 +99,83 @@ public class Menu {
 		} 
 		else if(input.equals("4")){
 			System.out.println("Forneça:");
-			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			
 			//checando se o empregado existe e se o casting é válido
-			Employee e = Main.cManager.searchByID(payroll.getEmployees(), new Commissioned(-1), id);
-			if(e != null){
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			if(e instanceof Commissioned){
 				double price = Main.inputHandler.loadDouble("O valor da venda:");
 				((Commissioned)e).submitSale(price);
-			} else System.out.println("Funcionário não encontrado ou não é comissionado");
+			} else System.out.println("O funcionário não é comissionado");
 		} 
 		else if(input.equals("5")) {
 			System.out.println("Forneça:");
-			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			
-			Employee e = Main.sManager.searchByID(payroll.getEmployees(), id);
-			if(e != null){
-				if(!e.getUnionInfo().getBelongs())
-					System.out.println("O funcionário não pertence ao sindicato");
-				else
-					payroll.getUnion().submitServiceFee(e);
-			} else System.out.println("Funcionário não encontrado");
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			if(!e.getUnionInfo().getBelongs())
+				System.out.println("O funcionário não pertence ao sindicato");
+			else
+				payroll.getUnion().submitServiceFee(e);
 		}
 		else if(input.equals("6")) {
+			System.out.println("Forneça:");
 
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			
+			System.out.print("\tDeseja mudar o nome ? (y/n):");
+			String choice = Main.in.nextLine();
+			if(choice.equals("y")){
+				System.out.print("\tnome:");
+				String name = Main.in.nextLine();
+				e.setName(name);
+			}
+			System.out.print("\tDeseja mudar o endereço ? (y/n):");
+			choice = Main.in.nextLine();
+			if(choice.equals("y")){
+				System.out.print("\tendereço:");
+				String address = Main.in.nextLine();
+				e.setAddress(address);
+			}
+			System.out.print("\tDeseja mudar o tipo do contrato ? (y/n):");
+			choice = Main.in.nextLine();
+			if(choice.equals("y")){
+				System.out.print("\tcontrato (comissionado, horista, salariado):");
+				String contract = Main.in.nextLine();
+				if(e instanceof Salaried && !(e instanceof Commissioned)){
+					if(!contract.equals("comissionado") && !contract.equals("horista")){
+						System.out.println("O funcionário já tem esse tipo");
+						return true;
+					}
+				} else if(e instanceof Commissioned) {
+					if(!contract.equals("salaried") && !contract.equals("horista")){
+						System.out.println("O funcionário já tem esse tipo");
+						return true;
+					}
+				} else if(e instanceof Hourly) {
+					if(!contract.equals("comissionado") && !contract.equals("salaried")){
+						System.out.println("O funcionário já tem esse tipo");
+						return true;
+					}
+				}
+				
+			}
 		} 
-		else if(input.equals("9")){
-			int id = Main.inputHandler.loadInt("Forneça o id do funcionário:");
+		else if(input.equals("7")){
+			System.out.println("Forneça:");
 
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			
+		}
+		else if(input.equals("9")){
+			System.out.println("Forneça:");
+			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			
 			System.out.println("Escolha uma das seguintes agendas:");
 			printSchedules(Main.schedules);
 			int choice = Main.inputHandler.loadInt(":");
 
 			if(choice >= 1 && choice <= Main.schedules.size()){
-				Employee e = Main.sManager.searchByID(payroll.getEmployees(), id);
-				if(e != null){
-					e.setSchedule(Main.schedules.get(choice - 1));
-					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
-				} else System.out.println("Funcionário não encontrado");
+				e.setSchedule(Main.schedules.get(choice - 1));
+				e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
 			} else {
 				System.out.println("Opção inválida");
 			}

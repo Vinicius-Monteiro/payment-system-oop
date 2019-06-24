@@ -5,8 +5,10 @@ public class HourlyManager extends EmployeeManager<Hourly>{
 	public Hourly createEmployee(Hourly employee, Payroll payroll){
 		incrementGlobalId();
 		setBasicInfo(employee, payroll);
-		employee.setHourPay(Main.inputHandler.loadDouble("Salário por hora:"));
 		employee.setSchedule(Main.schedules.get(1));
+		employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
+		employee.setHourPay(Main.inputHandler.loadDouble("Salário por hora:"));
+
 		return employee;
 	}
 }

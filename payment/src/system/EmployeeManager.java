@@ -46,6 +46,26 @@ public abstract class EmployeeManager <T extends Employee> {
 		}
 	}
 
+	public double getPayment(Employee employee) {
+		if(employee.getSchedule().getPaymentSchedule().split(" ")[0].equals("mensal")){
+			if(employee instanceof Commissioned)
+				return employee.getNextPaymentValue() + ((Commissioned)employee).getSalary();
+			else
+				return employee.getNextPaymentValue();
+		}
+		else {
+			double parcelas = Double.parseDouble(employee.getSchedule().getPaymentSchedule().split(" ")[1]);
+			if(parcelas == 1) parcelas = 4;
+			if(employee instanceof Salaried && !(employee instanceof Commissioned))
+				return employee.getNextPaymentValue()/parcelas;
+			else if(employee instanceof Commissioned){
+				double salary = ((Commissioned)employee).getSalary();
+				return (salary/parcelas) + employee.getNextPaymentValue();
+			} else
+				return employee.getNextPaymentValue();
+		}
+	}
+
 	public Employee searchByID(ArrayList<Employee> employees, int id){
 		for(Employee e: employees){
 			if(e.getId() == id) return e;
