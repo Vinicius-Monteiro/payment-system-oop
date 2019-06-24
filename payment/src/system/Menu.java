@@ -1,4 +1,5 @@
 package system;
+import java.util.ArrayList;
 
 public class Menu {
 	private static final String init = "Programa inicializado!\n";
@@ -37,14 +38,20 @@ public class Menu {
 		System.out.print(functions);
 	}
 
+	public void printSchedules(ArrayList<Schedule> schedules){
+		for(int i = 0; i < schedules.size(); i++){
+			System.out.println("\t" + (i + 1) + " - " + schedules.get(i).toString());
+		}
+	}
+
 	public boolean getInput(Payroll payroll){
 		System.out.print(":");
 		String input = Main.in.nextLine();
 
-		if(input.equals("manual")) this.printFunctions();
+		if(input.equals("manual")) printFunctions();
 		else if(input.equals("exit")) return false;
 		else if(input.equals("date")) System.out.println(payroll.getCalendar());
-		else if(input.equals("schedules")) return false;//HANDLE
+		else if(input.equals("schedules")) printSchedules(Main.schedules);
 		else if(input.equals("print")) payroll.printEmployees();
 		else if(input.equals("1")) {
 			System.out.println("Forneça:");
@@ -53,25 +60,36 @@ public class Menu {
 			
 			if(type.equals("salaried")){
 				Salaried employee = new Salaried(Main.sManager.getGlobalId());
-				employee = Main.sManager.createEmployee(employee, payroll.getUnion());
+				employee = Main.sManager.createEmployee(employee, payroll);
+				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
+				
 				payroll.addEmployee(employee);
-			} else if(type.equals("commissioned")) {
+			} 
+			else if(type.equals("commissioned")) {
 				Commissioned employee = new Commissioned(Main.cManager.getGlobalId());
-				employee = Main.cManager.createEmployee(employee, payroll.getUnion());
+				employee = Main.cManager.createEmployee(employee, payroll);
+				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
+				
 				payroll.addEmployee(employee);
-			} else if(type.equals("hourly")) {
+			} 
+			else if(type.equals("hourly")) {
 				Hourly employee = new Hourly(Main.hManager.getGlobalId());
-				employee = Main.hManager.createEmployee(employee, payroll.getUnion());
+				employee = Main.hManager.createEmployee(employee, payroll);
+				employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
+				
 				payroll.addEmployee(employee);
-			} else {
+			} 
+			else {
 				System.out.println("Tipo de contrato incorreto");
 				return getInput(payroll);
 			}
-		} else if(input.equals("2")) {
+		} 
+		else if(input.equals("2")) {
 			System.out.println("Forneça:");
 			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			payroll.remove(id);
-		} else if(input.equals("3")){
+		} 
+		else if(input.equals("3")){
 			System.out.println("Forneça:");
 			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			
@@ -85,7 +103,8 @@ public class Menu {
 				else
 					System.out.println("Horários invalidos");
 			} else System.out.println("Funcionário não encontrado ou não é horista");
-		} else if(input.equals("4")){
+		} 
+		else if(input.equals("4")){
 			System.out.println("Forneça:");
 			int id = Main.inputHandler.loadInt("O id do funcionário:");
 			
@@ -95,10 +114,11 @@ public class Menu {
 				double price = Main.inputHandler.loadDouble("O valor da venda:");
 				((Commissioned)e).submitSale(price);
 			} else System.out.println("Funcionário não encontrado ou não é comissionado");
-		} else if(input.equals("5")) {
+		} 
+		else if(input.equals("5")) {
 			System.out.println("Forneça:");
 			int id = Main.inputHandler.loadInt("O id do funcionário:");
-
+			
 			Employee e = Main.sManager.searchByID(payroll.getEmployees(), id);
 			if(e != null){
 				if(!e.getUnionInfo().getBelongs())
@@ -106,8 +126,38 @@ public class Menu {
 				else
 					payroll.getUnion().submitServiceFee(e);
 			} else System.out.println("Funcionário não encontrado");
-		} else if(input.equals("6")) {
-				
+		}
+		else if(input.equals("6")) {
+
+		} 
+		else if(input.equals("9")){
+			int id = Main.inputHandler.loadInt("Forneça o id do funcionário:");
+
+			System.out.println("Escolha uma das seguintes agendas:");
+			printSchedules(Main.schedules);
+			int choice = Main.inputHandler.loadInt(":");
+
+			if(choice >= 1 && choice <= Main.schedules.size()){
+				Employee e = Main.sManager.searchByID(payroll.getEmployees(), id);
+				if(e != null){
+					e.setSchedule(Main.schedules.get(choice - 1));
+					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
+				} else System.out.println("Funcionário não encontrado");
+			} else {
+				System.out.println("Opção inválida");
+			}
+		}
+		else if(input.equals("10")){
+			System.out.println("Forneça a agenda de pagamento:");
+
+			String paymentSchedule = Main.inputHandler.loadSchedule();
+			for(Schedule e: Main.schedules){
+				if(e.getPaymentSchedule().equals(paymentSchedule)){
+					System.out.println("Essa agenda já existe");
+					return true;
+				}
+			}
+			Main.schedules.add(new Schedule(paymentSchedule));
 		}
 		else {
 			System.out.println("Forneça um comando válido");

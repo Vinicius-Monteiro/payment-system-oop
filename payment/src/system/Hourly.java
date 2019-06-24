@@ -12,13 +12,13 @@ public class Hourly extends Employee{
 	}
 
 	public double getHourPay(){
-		return this.hourPay;
+		return hourPay;
 	}
 
 	public void submitTimeCard(int arrivalH, int arrivalM, int exitH, int exitM){
 		int timeWorked = timeToMinutes(arrivalH, arrivalM, exitH, exitM);
-		double payment = relativePay(this.getHourPay(), timeWorked);
-		this.setNextPayment(this.getNextPayment() + payment);
+		double payment = relativePay(getHourPay(), timeWorked);
+		setNextPaymentValue(getNextPaymentValue() + payment);
 	}
 
 	public static double relativePay(double hourPay, int timeWorked) {
@@ -42,6 +42,6 @@ public class Hourly extends Employee{
 
 	@Override
 	public String toString(){
-		return super.toString() + ", salário/hora de " + this.hourPay;
+		return super.toString() + ", salário/hora de " + hourPay;
 	}
 }

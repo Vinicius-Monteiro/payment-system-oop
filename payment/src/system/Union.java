@@ -17,6 +17,6 @@ public class Union{
 
 	public void submitServiceFee(Employee employee){
 		double serviceFee = Main.inputHandler.loadDouble("O preço do serviço prestado:");
-		employee.setNextPayment(employee.getNextPayment() - serviceFee);
+		employee.setNextPaymentValue(employee.getNextPaymentValue() - serviceFee);
 	}
 }

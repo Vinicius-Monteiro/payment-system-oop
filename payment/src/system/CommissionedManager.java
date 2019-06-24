@@ -2,10 +2,10 @@ package system;
 
 public class CommissionedManager extends SalariedManager<Commissioned>{
 	@Override
-	public Commissioned createEmployee(Commissioned employee, Union union){
-		employee = super.createEmployee(employee, union);
-		employee.setCommission(Main.inputHandler.loadDouble("Porcentagem de comissão:"));
+	public Commissioned createEmployee(Commissioned employee, Payroll payroll){
+		employee = super.createEmployee(employee, payroll);
 		employee.setSchedule(Main.schedules.get(2));
+		employee.setCommission(Main.inputHandler.loadDouble("Porcentagem de comissão:"));
 		return employee;
 	}
 }

@@ -6,7 +6,7 @@ public class Calendar{
 	private int currentYear;
 	private int[][] year;
 	
-	public Calendar(int day, int month, int year, String dayOfTheWeek){
+	public Calendar(int day, int month, int year, int dayOfTheWeek){
 		this.currentDay = day;
 		this.currentMonth = month;
 		this.currentYear = year;
@@ -14,15 +14,14 @@ public class Calendar{
 		buildCalendar(this.year, dayOfTheWeek);
 	}
 
-	public void buildCalendar(int[][] year, String dayOfTheWeek){
-		int day = Main.inputHandler.convertDayOfTheWeek(dayOfTheWeek);
+	public void buildCalendar(int[][] year, int dayOfTheWeek){
 		for(int i = 0; i < 13; i++) {//meses
 			for(int j = 0; j < 32; j++) {//dias
-				year[i][j] = day;
+				year[i][j] = dayOfTheWeek;
 				if (i == 0 || j == 0 || (i == 2 && j > 28)
 					|| j > 30 && ((i < 8 && (i % 2) == 0)  
 					|| (i > 8 && (i % 2) != 0))) year[i][j] = -1;
-				else if(++day == 8) day = 1;
+				else if(++dayOfTheWeek == 8) dayOfTheWeek = 1;
 			}
 		}
 	}
@@ -57,6 +56,6 @@ public class Calendar{
 
 	@Override
 	public String toString(){
-		return Integer.toString(this.currentDay) + "/" + Integer.toString(this.currentMonth) + "/" + Integer.toString(this.currentYear);
+		return Integer.toString(currentDay) + "/" + Integer.toString(currentMonth) + "/" + Integer.toString(currentYear);
 	}
 }

@@ -12,11 +12,11 @@ public class Salaried extends Employee {
 	}
 
 	public double getSalary(){
-		return this.salary;
+		return salary;
 	}
 
 	@Override
 	public String toString(){
-		return super.toString() + ", salário mensal " + this.salary;
+		return super.toString() + ", salário mensal " + salary;
 	}
 }

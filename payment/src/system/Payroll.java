@@ -7,20 +7,25 @@ public class Payroll {
 	private Calendar calendar;
 
 	public Payroll(){
-		this.employees = new ArrayList<Employee>();
+		employees = new ArrayList<Employee>();
 
 		boolean correctInput = false;
 		while(!correctInput){
 			System.out.println("Especifique a data de hoje");
 			int[] date = Main.inputHandler.loadInt("(dd mm yy):", 3);
 			
-			System.out.print("Especifique o primeiro dia do ano (e.g. segunda, terca...):");
+			System.out.print("Especifique o primeiro dia do ano (e.g. segunda, terca...)\n\t:");
 			String dayOfTheWeek = Main.in.nextLine();
-			
+			int day = Main.inputHandler.convertDayOfTheWeek(dayOfTheWeek);
+
+			if(day == 0){
+				System.out.println("Dia atual inválido");
+				continue;
+			}
+
 			try{
-				this.calendar = new Calendar(date[0], date[1], date[2], dayOfTheWeek);
-				if(Main.inputHandler.checkDate(date, calendar) && 
-				Main.inputHandler.convertDayOfTheWeek(dayOfTheWeek) != 0){
+				calendar = new Calendar(date[0], date[1], date[2], day);
+				if(Main.inputHandler.checkDate(date, calendar)){
 					System.out.println("Calendário criado");
 					correctInput = true;
 				} else
@@ -48,8 +53,8 @@ public class Payroll {
 	}
 
 	public void remove(int id){
-		if(Main.sManager.searchByID(this.employees, id) != null){
-			employees.remove(Main.sManager.searchByID(this.employees, id));
+		if(Main.sManager.searchByID(employees, id) != null){
+			employees.remove(Main.sManager.searchByID(employees, id));
 			System.out.println("Empregado removido");
 		} else System.out.println("Empregado não encontrado");
 	}

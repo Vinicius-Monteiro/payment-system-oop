@@ -12,15 +12,15 @@ public class Commissioned extends Salaried{
 	}
 
 	public double getCommission(){
-		return this.commission;
+		return commission;
 	}
 
 	public void submitSale(double price) {
-		this.setNextPayment(this.getNextPayment() + ((this.commission * price)/100));
+		setNextPaymentValue(getNextPaymentValue() + ((commission * price)/100));
 	}
 
 	@Override
 	public String toString(){
-		return super.toString() + ", comissão de " + this.commission + "%";
+		return super.toString() + ", comissão de " + commission + "%";
 	}
 }

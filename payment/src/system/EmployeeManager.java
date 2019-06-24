@@ -23,7 +23,7 @@ public abstract class EmployeeManager <T extends Employee> {
 		employee.getUnionInfo().setFee(Main.inputHandler.loadDouble("Taxa sindical:"));
 	}
 
-	public void setBasicInfo(T employee, Union union){
+	public void setBasicInfo(T employee, Payroll payroll){
 		System.out.print("\tNome:");
 		String name = Main.in.nextLine();
 		employee.setName(name);
@@ -38,8 +38,12 @@ public abstract class EmployeeManager <T extends Employee> {
 
 		System.out.print("\tO funcionário pertence ao sindicato ?(y/n):");
 		String answer = Main.in.nextLine();
-		if(answer.equals("y")) collectUnionInfo(employee, union);
-		else employee.getUnionInfo().setBelongs(false);
+		if(answer.equals("y")) collectUnionInfo(employee, payroll.getUnion());
+		else if(answer.equals("n")) employee.getUnionInfo().setBelongs(false);
+		else{
+			System.out.println("Entrada inválida");
+			setBasicInfo(employee, payroll);
+		}
 	}
 
 	public Employee searchByID(ArrayList<Employee> employees, int id){
@@ -57,5 +61,5 @@ public abstract class EmployeeManager <T extends Employee> {
 		return null;
 	}
 
-	public abstract T createEmployee(T employee, Union union);
+	public abstract T createEmployee(T employee, Payroll payroll);
 }

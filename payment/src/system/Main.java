@@ -15,9 +15,9 @@ public class Main {
         menu.printInit();
         menu.printCommands();
         Payroll payroll = new Payroll();
-		schedules.add(new Schedule(true, -1, "\0"));//mensal $
-		schedules.add(new Schedule(false, 1, "sexta"));//semanal 1 sexta
-		schedules.add(new Schedule(false, 2, "sexta"));//semanal 2 sexta
+		schedules.add(new Schedule("mensal $"));
+		schedules.add(new Schedule("semanal 1 sexta"));
+		schedules.add(new Schedule("semanal 2 sexta"));
 
         boolean loop = true;
         while(loop){

@@ -41,6 +41,41 @@ public class InputHandler{
 		}
 	}
 
+	public String loadSchedule(){
+		while(true){
+			System.out.print("\tmensal ou semanal:");
+			String type = Main.in.nextLine();
+
+			if(type.equals("mensal")){
+				System.out.print("\tdia do mês ou $ para o último dia útil:");
+				String helper = Main.in.nextLine();
+				if(helper.equals("$") || isNumeric(helper))
+					return type + " " + helper;
+			} 
+			else if(type.equals("semanal")) {
+				System.out.print("\tA cada quantas semanas:");
+				String helper = Main.in.nextLine();
+
+				if(isNumeric(helper) && Integer.parseInt(helper) >= 1 
+				&& Integer.parseInt(helper) <= 7)
+					System.out.print("\tDia da semana (e.g. segunda, terca...) :");
+					String dayOfTheWeek = Main.in.nextLine();
+					if(convertDayOfTheWeek(dayOfTheWeek) != 0)
+						return type + " " + helper + " " + dayOfTheWeek;
+			}
+			System.out.println("Agenda incorreta");
+		}
+	}
+
+	public boolean isNumeric(String str) { 
+		try {  
+			Double.parseDouble(str);  
+			return true;
+		} catch(NumberFormatException e) {  
+			return false;  
+		}  
+	  }
+	
 	public int convertDayOfTheWeek(String dayOfTheWeek){
 		if(dayOfTheWeek.equals("domingo")) return 1;
 		else if(dayOfTheWeek.equals("segunda")) return 2;
