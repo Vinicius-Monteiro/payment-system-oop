@@ -2,23 +2,45 @@ package system;
 import java.util.ArrayList;
 
 public class Payroll {
-	ArrayList<Employee> employees;
-	Union union = new Union();
-	Calendar calendar;
+	private ArrayList<Employee> employees;
+	private Union union = new Union();
+	private Calendar calendar;
 
 	public Payroll(){
 		this.employees = new ArrayList<Employee>();
 
-		System.out.println("Especifique a data de hoje");
-		int day = 0, month = 0, year = 0;
-		day = Main.inputHandler.loadInt("dia:");
-		month = Main.inputHandler.loadInt("mes:");
-		year = Main.inputHandler.loadInt("ano:");
-		
-		System.out.print("Especifique o primeiro dia do ano (e.g. segunda, terca...):");
-		String dayOfTheWeek = Main.in.nextLine();
-		
-		this.calendar = new Calendar(day, month, year, dayOfTheWeek);
+		boolean correctInput = false;
+		while(!correctInput){
+			System.out.println("Especifique a data de hoje");
+			int[] date = Main.inputHandler.loadInt("(dd mm yy):", 3);
+			
+			System.out.print("Especifique o primeiro dia do ano (e.g. segunda, terca...):");
+			String dayOfTheWeek = Main.in.nextLine();
+			
+			try{
+				this.calendar = new Calendar(date[0], date[1], date[2], dayOfTheWeek);
+				if(Main.inputHandler.checkDate(date, calendar) && 
+				Main.inputHandler.convertDayOfTheWeek(dayOfTheWeek) != 0){
+					System.out.println("Calendário criado");
+					correctInput = true;
+				} else
+					System.out.println("Dia atual inválido");
+			} catch(ArrayIndexOutOfBoundsException e) {
+				System.out.println("Dia atual inválido");
+			}
+		}
+	}
+
+	public ArrayList<Employee> getEmployees() {
+		return employees;
+	}
+
+	public Union getUnion() {
+		return union;
+	}
+	
+	public Calendar getCalendar() {
+		return calendar;
 	}
 
 	public void addEmployee(Employee employee){
@@ -26,14 +48,10 @@ public class Payroll {
 	}
 
 	public void remove(int id){
-		for(Employee e: employees){
-			if(e.getId() == id){
-				employees.remove(e);
-				System.out.println("Empregado removido");
-				return;
-			}
-		}
-		System.out.println("Empregado não encontrado");
+		if(Main.sManager.searchByID(this.employees, id) != null){
+			employees.remove(Main.sManager.searchByID(this.employees, id));
+			System.out.println("Empregado removido");
+		} else System.out.println("Empregado não encontrado");
 	}
 
 	public void printEmployees(){

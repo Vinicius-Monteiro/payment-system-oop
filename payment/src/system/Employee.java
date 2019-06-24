@@ -5,12 +5,13 @@ public abstract class Employee {
 	private String address;
 	private String paymentMethod;
 	private final int id;//handle id abstractly
-	private double payCheck;
-	public UnionInfo unionInfo = new UnionInfo();
+	private double nextPayment;
+	private UnionInfo unionInfo = new UnionInfo();
+	private Schedule schedule = new Schedule();
 
 	public Employee(int id){
 		this.id = id;
-		this.payCheck = 0;
+		this.nextPayment = 0;
 	}
 
 	public void setName(String name){
@@ -25,10 +26,14 @@ public abstract class Employee {
 		this.paymentMethod = paymentMethod;
 	}
 	
-	public void setPayCheck(double payCheck) {
-		this.payCheck = payCheck;
+	public void setNextPayment(double nextPayment) {
+		this.nextPayment = nextPayment;
 	}
 
+	public void setSchedule(Schedule schedule) {
+		this.schedule = schedule;
+	}
+	
 	public String getName(){
 		return this.name;
 	}
@@ -42,20 +47,25 @@ public abstract class Employee {
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
-	public double getPayCheck() {
-		return payCheck;
+	public double getNextPayment() {
+		return this.nextPayment;
 	}
 
-	public String getUnionInfo() {
-		return unionInfo.toString();
+	public UnionInfo getUnionInfo() {
+		return this.unionInfo;
+	}
+
+	public Schedule getSchedule() {
+		return schedule;
 	}
 
 	@Override
 	public String toString() {
 		return ("Empregado " + this.getName() + ", endereço " + this.getAddress() + ", método de pagamento "
-		+ this.getPaymentMethod() + ", ID " + this.getId() + ", " + this.getUnionInfo());
+		+ this.getPaymentMethod() + ", ID " + this.getId() + ", próximo contra-cheque de " + 
+		this.getNextPayment() + ", " + this.getUnionInfo().toString()) + this.getSchedule().toString();
 	}
 }

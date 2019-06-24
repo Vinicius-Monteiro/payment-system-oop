@@ -1,7 +1,7 @@
 package system;
 
 public class Commissioned extends Salaried{
-	public double commission;
+	private double commission;
 
 	public Commissioned(int id){
 		super(id);
@@ -13,6 +13,10 @@ public class Commissioned extends Salaried{
 
 	public double getCommission(){
 		return this.commission;
+	}
+
+	public void submitSale(double price) {
+		this.setNextPayment(this.getNextPayment() + ((this.commission * price)/100));
 	}
 
 	@Override

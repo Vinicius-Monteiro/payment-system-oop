@@ -1,8 +1,6 @@
 package system;
-import java.util.ArrayList;
 
 public class Union{
-	ArrayList<Employee> registeredEmployees = new ArrayList<Employee>();
 	private int unionGlobalID;
 
 	public Union(){
@@ -18,6 +16,7 @@ public class Union{
 	}
 
 	public void submitServiceFee(Employee employee){
-
+		double serviceFee = Main.inputHandler.loadDouble("O preço do serviço prestado:");
+		employee.setNextPayment(employee.getNextPayment() - serviceFee);
 	}
 }

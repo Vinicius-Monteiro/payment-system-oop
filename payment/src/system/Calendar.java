@@ -1,10 +1,10 @@
 package system;
 
 public class Calendar{
-	int currentDay;
-	int currentMonth;
-	int currentYear;
-	int[][] year;
+	private int currentDay;
+	private int currentMonth;
+	private int currentYear;
+	private int[][] year;
 	
 	public Calendar(int day, int month, int year, String dayOfTheWeek){
 		this.currentDay = day;
@@ -15,14 +15,7 @@ public class Calendar{
 	}
 
 	public void buildCalendar(int[][] year, String dayOfTheWeek){
-		int day = 0;
-		if(dayOfTheWeek.equals("domingo")) day = 1;
-		else if(dayOfTheWeek.equals("segunda")) day = 2;
-		else if(dayOfTheWeek.equals("terca")) day = 3;
-		else if(dayOfTheWeek.equals("quarta")) day = 4;
-		else if(dayOfTheWeek.equals("quinta")) day = 5;
-		else if(dayOfTheWeek.equals("sexta")) day = 6;
-		else if(dayOfTheWeek.equals("sabado")) day = 7;
+		int day = Main.inputHandler.convertDayOfTheWeek(dayOfTheWeek);
 		for(int i = 0; i < 13; i++) {//meses
 			for(int j = 0; j < 32; j++) {//dias
 				year[i][j] = day;
@@ -32,6 +25,34 @@ public class Calendar{
 				else if(++day == 8) day = 1;
 			}
 		}
+	}
+
+	public void setCurrentDay(int currentDay) {
+		this.currentDay = currentDay;
+	}
+
+	public void setCurrentMonth(int currentMonth) {
+		this.currentMonth = currentMonth;
+	}
+
+	public void setYear(int[][] year) {
+		this.year = year;
+	}
+
+	public int getCurrentDay() {
+		return currentDay;
+	}
+
+	public int getCurrentMonth() {
+		return currentMonth;
+	}
+
+	public int getCurrentYear() {
+		return currentYear;
+	}
+
+	public int[][] getYear() {
+		return year;
 	}
 
 	@Override

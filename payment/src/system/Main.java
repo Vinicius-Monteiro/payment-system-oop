@@ -1,5 +1,6 @@
 package system;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
     public static final Menu menu = new Menu();
@@ -8,10 +9,15 @@ public class Main {
     public static final CommissionedManager cManager = new CommissionedManager();
     public static final HourlyManager hManager = new HourlyManager();
     public static final InputHandler inputHandler = new InputHandler();
+	public static ArrayList<Schedule> schedules = new ArrayList<Schedule>();
+
     public static void main(String[] args){
         menu.printInit();
         menu.printCommands();
         Payroll payroll = new Payroll();
+		schedules.add(new Schedule(true, -1, "\0"));//mensal $
+		schedules.add(new Schedule(false, 1, "sexta"));//semanal 1 sexta
+		schedules.add(new Schedule(false, 2, "sexta"));//semanal 2 sexta
 
         boolean loop = true;
         while(loop){

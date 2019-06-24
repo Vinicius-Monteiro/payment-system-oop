@@ -6,6 +6,7 @@ public class HourlyManager extends EmployeeManager<Hourly>{
 		incrementGlobalId();
 		setBasicInfo(employee, union);
 		employee.setHourPay(Main.inputHandler.loadDouble("Salário por hora:"));
+		employee.setSchedule(Main.schedules.get(1));
 		return employee;
 	}
 }

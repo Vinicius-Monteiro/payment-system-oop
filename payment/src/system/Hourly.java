@@ -15,6 +15,31 @@ public class Hourly extends Employee{
 		return this.hourPay;
 	}
 
+	public void submitTimeCard(int arrivalH, int arrivalM, int exitH, int exitM){
+		int timeWorked = timeToMinutes(arrivalH, arrivalM, exitH, exitM);
+		double payment = relativePay(this.getHourPay(), timeWorked);
+		this.setNextPayment(this.getNextPayment() + payment);
+	}
+
+	public static double relativePay(double hourPay, int timeWorked) {
+		double perMinute = hourPay / 60.0;
+		if(timeWorked <= (60 * 8)) return perMinute * timeWorked;
+		else return ((timeWorked - (60 * 8)) * (1.5 * perMinute)) + ((60 * 8) * perMinute);
+	}
+
+	public static int timeToMinutes(int arrivalH, int arrivalM, int exitH, int exitM) {
+		int hours = (exitH - arrivalH), mins, total;
+		total = hours * 60;
+		if(exitM < arrivalM) {
+			mins = arrivalM - exitM;
+			total -= mins;
+		} else {
+			mins = exitM - arrivalM;
+			total += mins;
+		}
+		return total;
+	}
+
 	@Override
 	public String toString(){
 		return super.toString() + ", salário/hora de " + this.hourPay;

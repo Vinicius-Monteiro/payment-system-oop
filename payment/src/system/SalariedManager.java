@@ -6,6 +6,7 @@ public class SalariedManager <T extends Salaried> extends EmployeeManager<T>{
 		incrementGlobalId();
 		setBasicInfo(employee, union);
 		employee.setSalary(Main.inputHandler.loadDouble("Salário mensal:"));
+		employee.setSchedule(Main.schedules.get(0));
 		return employee;
 	}
 }

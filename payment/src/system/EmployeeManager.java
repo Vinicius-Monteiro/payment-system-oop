@@ -1,4 +1,5 @@
 package system;
+import java.util.ArrayList;
 
 public abstract class EmployeeManager <T extends Employee> {
 	private static int globalId;
@@ -16,10 +17,10 @@ public abstract class EmployeeManager <T extends Employee> {
 	}
 	
 	public void collectUnionInfo(T employee, Union union){
-		employee.unionInfo.setBelongs(true);
-		employee.unionInfo.setId(union.getUnionGlobalID());
+		employee.getUnionInfo().setBelongs(true);
+		employee.getUnionInfo().setId(union.getUnionGlobalID());
 		union.incrementUnionGlobalID();
-		employee.unionInfo.setFee(Main.inputHandler.loadDouble("Taxa sindical:"));
+		employee.getUnionInfo().setFee(Main.inputHandler.loadDouble("Taxa sindical:"));
 	}
 
 	public void setBasicInfo(T employee, Union union){
@@ -38,7 +39,22 @@ public abstract class EmployeeManager <T extends Employee> {
 		System.out.print("\tO funcionário pertence ao sindicato ?(y/n):");
 		String answer = Main.in.nextLine();
 		if(answer.equals("y")) collectUnionInfo(employee, union);
-		else employee.unionInfo.setBelongs(false);
+		else employee.getUnionInfo().setBelongs(false);
+	}
+
+	public Employee searchByID(ArrayList<Employee> employees, int id){
+		for(Employee e: employees){
+			if(e.getId() == id) return e;
+		}
+		return null;
+	}
+
+	public Employee searchByID(ArrayList<Employee> employees, T c, int id){
+		for(Employee e: employees){
+			if(e.getId() == id && e.getClass() == c.getClass())
+				return e;
+		}
+		return null;
 	}
 
 	public abstract T createEmployee(T employee, Union union);
