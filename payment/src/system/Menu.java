@@ -82,6 +82,7 @@ public class Menu {
 			System.out.println("Forneça:");
 			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
 			payroll.remove(e.getId());
+			System.out.println("Empregado removido");
 		} 
 		else if(input.equals("3")){
 			System.out.println("Forneça:");
@@ -128,6 +129,7 @@ public class Menu {
 				String name = Main.in.nextLine();
 				e.setName(name);
 			}
+
 			System.out.print("\tDeseja mudar o endereço ? (y/n):");
 			choice = Main.in.nextLine();
 			if(choice.equals("y")){
@@ -135,6 +137,7 @@ public class Menu {
 				String address = Main.in.nextLine();
 				e.setAddress(address);
 			}
+			
 			System.out.print("\tDeseja mudar o tipo do contrato ? (y/n):");
 			choice = Main.in.nextLine();
 			if(choice.equals("y")){
@@ -142,28 +145,127 @@ public class Menu {
 				String contract = Main.in.nextLine();
 				if(e instanceof Salaried && !(e instanceof Commissioned)){
 					if(!contract.equals("comissionado") && !contract.equals("horista")){
-						System.out.println("O funcionário já tem esse tipo");
+						System.out.println("O funcionário já tem esse contrato");
 						return true;
 					}
 				} else if(e instanceof Commissioned) {
-					if(!contract.equals("salaried") && !contract.equals("horista")){
-						System.out.println("O funcionário já tem esse tipo");
+					if(!contract.equals("salariado") && !contract.equals("horista")){
+						System.out.println("O funcionário já tem esse contrato");
 						return true;
 					}
 				} else if(e instanceof Hourly) {
-					if(!contract.equals("comissionado") && !contract.equals("salaried")){
-						System.out.println("O funcionário já tem esse tipo");
+					if(!contract.equals("comissionado") && !contract.equals("salariado")){
+						System.out.println("O funcionário já tem esse contrato");
 						return true;
+					}	
+				}
+				if(contract.equals("salariado")){
+					Salaried n = new Salaried(e.getId());
+					Main.sManager.copyEmployee(e, n, payroll);
+					double salary = Main.inputHandler.loadDouble("salário mensal:");
+					n.setSalary(salary);
+					n.setNextPaymentValue(n.getSalary());//REMOVER
+					payroll.remove(e.getId());
+					payroll.addEmployee(n);
+					e = n;
+				} else if(contract.equals("comissionado")){
+					Commissioned n = new Commissioned(e.getId());
+					Main.cManager.copyEmployee(e, n, payroll);
+					double salary = Main.inputHandler.loadDouble("salário mensal:");
+					double commission = Main.inputHandler.loadDouble("comissão:");
+					n.setSalary(salary);
+					n.setCommission(commission);
+					payroll.remove(e.getId());
+					payroll.addEmployee(n);
+					e = n;
+				} else if(contract.equals("horista")){
+					Hourly n = new Hourly(e.getId());
+					Main.hManager.copyEmployee(e, n, payroll);
+					double hourPay = Main.inputHandler.loadDouble("salário por hora:");
+					n.setHourPay(hourPay);
+					payroll.remove(e.getId());
+					payroll.addEmployee(n);
+					e = n;
+				} else
+					System.out.println("Contrato inválido");
+			}
+
+			System.out.print("\tdeseja mudar alguma informação sindical ? (y/n):");
+			choice = Main.in.nextLine();
+			if(choice.equals("y")){
+				System.out.print("\ta participação no sindicato ? (y/n):");
+				String change = Main.in.nextLine();
+				if(change.equals("y")){
+					System.out.print("\tpertence ao sindicato ? (y/n):");
+					String belongs = Main.in.nextLine();
+					if(belongs.equals("y")){ 
+						e.getUnionInfo().setBelongs(true);
+						e.getUnionInfo().setId(payroll.getUnion().getUnionGlobalID());
+						payroll.getUnion().incrementUnionGlobalID();
+					}
+					else if(belongs.equals("n")) e.getUnionInfo().setBelongs(false);
+					else{
+						System.out.println("Opção inválido");
+					}
+
+					System.out.print("\ta identificação no sindicato ? (y/n):");
+					String idChoice = Main.in.nextLine();
+					if(idChoice.equals("y")){
+						int id = Main.inputHandler.loadInt("id:");
+						for(Employee aux: payroll.getEmployees()){
+							while(aux.getUnionInfo().getBelongs() && aux.getUnionInfo().getId() == id){
+								id = Main.inputHandler.loadInt("id:");
+							}
+						}
+						e.getUnionInfo().setId(id);
+					}
+
+					System.out.print("\ta taxa sindical ? (y/n):");
+					String feeChoice = Main.in.nextLine();
+					if(feeChoice.equals("y")){
+						double fee = Main.inputHandler.loadDouble("taxa sindical:");
+						e.getUnionInfo().setFee(fee);
 					}
 				}
-				
 			}
 		} 
 		else if(input.equals("7")){
-			System.out.println("Forneça:");
+			String oldDay = payroll.getCalendar().toString();
+			System.out.println("Rodando a folha de pagamento para o dia " + oldDay);
 
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
-			
+			String nextDay = payroll.getCalendar().nextDay();
+			if(nextDay.equals("0/0")){
+				int lastDayOfTheYear = payroll.getCalendar().getYear()[12][31];
+				if(++lastDayOfTheYear == 8) lastDayOfTheYear = 1;
+				Calendar nextYear = new Calendar(1, 1, payroll.getCalendar().getCurrentYear() + 1, lastDayOfTheYear);
+				payroll.setCalendar(nextYear);
+			} else {
+				payroll.getCalendar().setCurrentDay(Integer.parseInt(nextDay.split("/")[0]));
+				payroll.getCalendar().setCurrentMonth(Integer.parseInt(nextDay.split("/")[1]));
+			}
+
+			for(Employee e: payroll.getEmployees()){
+				if(e.getNextPaymentDate().equals(oldDay)){
+					double payment = Main.sManager.getPayment(e);
+					System.out.println("\t---------------------");
+					System.out.println("\tEmpregado " + e.getName() + " com ID " + e.getId() + " recebera hoje");
+					if(e.getUnionInfo().getBelongs()){
+						System.out.println("\tValor a receber antes das deducoes: $" + payment);
+						System.out.println("\tDeducoes sindicais: " + e.getUnionInfo().getFee() + "%");
+						System.out.println("\tValor a receber: $" + 
+						Main.sManager.afterDeduction(payment, e.getUnionInfo().getFee()));
+					} else
+						System.out.println("\tValor a receber: $" + payment);
+					System.out.println("\tMétodo de pagamento: " + e.getPaymentMethod());
+					e.setNextPaymentValue(0);
+					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
+					System.out.println("\tEmpregado pago.");
+					System.out.println("\t---------------------");
+				}
+			}
+
+			System.out.println("Todos os empregados foram pagos.");
+			System.out.println("O dia de hoje agora é " + payroll.getCalendar().toString());
 		}
 		else if(input.equals("9")){
 			System.out.println("Forneça:");

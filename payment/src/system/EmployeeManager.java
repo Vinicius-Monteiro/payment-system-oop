@@ -48,10 +48,12 @@ public abstract class EmployeeManager <T extends Employee> {
 
 	public double getPayment(Employee employee) {
 		if(employee.getSchedule().getPaymentSchedule().split(" ")[0].equals("mensal")){
-			if(employee instanceof Commissioned)
-				return employee.getNextPaymentValue() + ((Commissioned)employee).getSalary();
+			if(employee instanceof Salaried)
+				return employee.getNextPaymentValue() + ((Salaried)employee).getSalary();
 			else
 				return employee.getNextPaymentValue();
+			//else 
+			//	return ((Salaried)employee).getSalary();
 		}
 		else {
 			double parcelas = Double.parseDouble(employee.getSchedule().getPaymentSchedule().split(" ")[1]);
@@ -79,6 +81,23 @@ public abstract class EmployeeManager <T extends Employee> {
 				return e;
 		}
 		return null;
+	}
+
+	public void copyEmployee(Employee from, Employee to, Payroll payroll){
+		to.setName(from.getName());
+		to.setAddress(from.getAddress());
+		to.setPaymentMethod(from.getPaymentMethod());
+		to.setNextPaymentValue(0);
+		to.setNextPaymentDate(from.getNextPaymentDate());
+		to.setSchedule(from.getSchedule());
+		to.setNextPaymentDate(to.getSchedule().calculatePaymentDate(payroll));
+		to.getUnionInfo().setBelongs(from.getUnionInfo().getBelongs());
+		to.getUnionInfo().setId(from.getUnionInfo().getId());
+		to.getUnionInfo().setFee(from.getUnionInfo().getFee());
+	}
+
+	public String afterDeduction(double pay, double fee) {
+		return Double.toString(pay - ((pay * fee)/100.0));
 	}
 
 	public abstract T createEmployee(T employee, Payroll payroll);

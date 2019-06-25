@@ -48,6 +48,10 @@ public class Payroll {
 		return calendar;
 	}
 
+	public void setCalendar(Calendar calendar) {
+		this.calendar = calendar;
+	}
+
 	public void addEmployee(Employee employee){
 		employees.add(employee);
 	}
@@ -55,7 +59,6 @@ public class Payroll {
 	public void remove(int id){
 		if(Main.sManager.searchByID(employees, id) != null){
 			employees.remove(Main.sManager.searchByID(employees, id));
-			System.out.println("Empregado removido");
 		} else System.out.println("Empregado não encontrado");
 	}
 

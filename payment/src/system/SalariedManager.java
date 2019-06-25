@@ -7,6 +7,7 @@ public class SalariedManager <T extends Salaried> extends EmployeeManager<T>{
 		setBasicInfo(employee, payroll);
 		employee.setSalary(Main.inputHandler.loadDouble("Salário mensal:"));
 		employee.setSchedule(Main.schedules.get(0));
+		employee.setNextPaymentValue(0);
 		employee.setNextPaymentDate(employee.getSchedule().calculatePaymentDate(payroll));
 		
 		return employee;

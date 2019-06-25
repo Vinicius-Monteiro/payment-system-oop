@@ -73,9 +73,9 @@ public abstract class Employee {
 
 	@Override
 	public String toString() {
-		return ("Empregado " + name + ", endereço " + address + ", método de pagamento "
+		return ("Empregado " + name + ", endereço \"" + address + "\", método de pagamento "
 		+ paymentMethod + ", ID " + id + ", próximo contra-cheque de " + 
 		Main.sManager.getPayment(this) + " em " + nextPaymentDate + ", " + unionInfo.toString()) 
-		+ ", calendário de pagamento " + schedule.toString();
+		+ ", calendário de pagamento \"" + schedule.toString() + "\"";
 	}
 }

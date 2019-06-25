@@ -54,6 +54,43 @@ public class Calendar{
 		return year;
 	}
 
+	public String lastBusinessDay(int [][]calendar, int currentMonth) {
+		int i, j;
+		for(i = currentMonth; i < 13; i++) {
+			for(j = 31; j >= 1; j--) {
+				if(calendar[i][j] != -1 && calendar[i][j] != 7 && calendar[i][j] != 1)
+					return Integer.toString(j) + '/' + Integer.toString(i);
+			}
+		}
+		i = 0;
+		j = 0;
+		return Integer.toString(j) + '/' + Integer.toString(i);
+	}
+
+	public String nextDay() {
+		int i, j, aux = currentDay;
+		for(i = currentMonth; i < 13; i++){
+			if(i != currentMonth) aux = 0;
+			for(j = aux + 1; j < 32; j++)
+				if(year[i][j] != -1) return Integer.toString(j) + '/' + Integer.toString(i);
+		}
+		i = 0;
+		j = 0;
+		return Integer.toString(j) + "/" + Integer.toString(i);
+	}
+
+	public String nextXDay(int [][]calendar, int currentDay, int currentMonth, int day) {
+		int i = currentMonth, j = currentDay;
+		for(i = currentMonth; i < 13; i++){
+			if(i != currentMonth) currentDay = 1;
+			for(j = currentDay; j < 32; j++)
+				if(calendar[i][j] == day) return Integer.toString(j) + '/' + Integer.toString(i);
+		}
+		i = 0;
+		j = 0;
+		return Integer.toString(j) + "/" + Integer.toString(i);
+	}
+
 	@Override
 	public String toString(){
 		return Integer.toString(currentDay) + "/" + Integer.toString(currentMonth) + "/" + Integer.toString(currentYear);

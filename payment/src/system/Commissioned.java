@@ -21,6 +21,6 @@ public class Commissioned extends Salaried{
 
 	@Override
 	public String toString(){
-		return super.toString() + ", comissão de " + commission + "%";
+		return super.toString() + ", comissionado, comissão de " + commission + "%";
 	}
 }

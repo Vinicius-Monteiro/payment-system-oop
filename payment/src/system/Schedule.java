@@ -18,31 +18,6 @@ public class Schedule {
 		return paymentSchedule;
 	}
 
-	public static String lastBusinessDay(int [][]calendar, int currentMonth) {
-		int i = currentMonth, j = 31;
-		for(; i < 13; i++) {
-			for(; j >= 1; j--) {
-				if(calendar[i][j] != -1 && calendar[i][j] != 7 && calendar[i][j] != 1)
-					return Integer.toString(j) + '/' + Integer.toString(i);
-			}
-		}
-		i = 0;
-		j = 0;
-		return Integer.toString(j) + '/' + Integer.toString(i);
-	}
-
-	public String nextXDay(int [][]calendar, int currentDay, int currentMonth, int day) {
-		int i = currentMonth, j = currentDay;
-		for(i = currentMonth; i < 13; i++){
-			if(i != currentMonth) currentDay = 1;
-			for(j = currentDay; j < 32; j++)
-				if(calendar[i][j] == day) return Integer.toString(j) + '/' + Integer.toString(i);
-		}
-		i = 0;
-		j = 0;
-		return Integer.toString(j) + "/" + Integer.toString(i);
-	}
-
 	public String calculatePaymentDate(Payroll payroll){
 		Calendar currentYear = payroll.getCalendar();
 		int lastDayOfTheYear = currentYear.getYear()[12][31];
@@ -52,9 +27,11 @@ public class Schedule {
 		String[] split = paymentSchedule.split(" ");
 		if(split[0].equals("mensal")){
 			if(split[1].equals("$")){
-				String aux = lastBusinessDay(currentYear.getYear(), currentYear.getCurrentMonth());
+				String aux = currentYear.lastBusinessDay(currentYear.getYear(), currentYear.getCurrentMonth());
+				if(Integer.parseInt(aux.split("/")[0]) < payroll.getCalendar().getCurrentDay())
+					aux = currentYear.lastBusinessDay(currentYear.getYear(), currentYear.getCurrentMonth() + 1);
 				if(aux.equals("0/0")) //proximo ano
-					return lastBusinessDay(nextYear.getYear(), 1) + "/" + nextYear.getCurrentYear();
+					return nextYear.lastBusinessDay(nextYear.getYear(), 1) + "/" + nextYear.getCurrentYear();
 				else
 					return aux + "/" + currentYear.getCurrentYear();
 			} else {
@@ -76,10 +53,10 @@ public class Schedule {
 			int month = currentYear.getCurrentMonth();
 			String next = "\0";
 			for(int i = 0; i < Integer.parseInt(split[1]); i++){
-				next = nextXDay(aux.getYear(), day, month, Main.inputHandler.convertDayOfTheWeek(split[2]));
+				next = aux.nextXDay(aux.getYear(), day, month, Main.inputHandler.convertDayOfTheWeek(split[2]));
 				if(next.equals("0/0")){
 					aux = nextYear;
-					next = nextXDay(aux.getYear(), 1, 1, Main.inputHandler.convertDayOfTheWeek(split[2]));
+					next = aux.nextXDay(aux.getYear(), 1, 1, Main.inputHandler.convertDayOfTheWeek(split[2]));
 				}
 				day = Integer.parseInt(next.split("/")[0]);
 				month = Integer.parseInt(next.split("/")[1]);
