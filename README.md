@@ -16,9 +16,9 @@ Exemplo de uso da funcionalidade 1:<br>
 salariado<br>
 Joao da silva<br>
 sao paulo<br>
-3
-y
-10
+3<br>
+y<br>
+10<br>
 1500
 
 #### Funcionalidade 3
@@ -28,7 +28,7 @@ Exemplo dos horários de entrada e saída:<br>
 
 #### Funcionalidade 5
 
-A identificação fornecida deve ser a do sindicato<br>
+A identificação fornecida deve ser a do sindicato.<br>
 A taxa de serviço deve ser um valor avulso.
 
 #### Funcionalidade 6
