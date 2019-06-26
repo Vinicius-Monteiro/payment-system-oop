@@ -38,7 +38,7 @@ public class UnionInfo implements Cloneable{
 	}
 
 	public String toString(){
-		if (this.belongs) return "pertence ao sindicato, seu ID sindical é " + this.id + " e sua taxa sindical é " + this.fee;
-		else return "não pertence ao sindicato";
+		if (this.belongs) return "\nPertence ao sindicato\nID sindical: " + this.id + "\nTaxa sindical: " + this.fee + "%";
+		else return "\nNão pertence ao sindicato";
 	}
 }

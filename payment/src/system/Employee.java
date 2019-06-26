@@ -1,6 +1,6 @@
 package system;
 
-public abstract class Employee implements Cloneable{
+public abstract class Employee{
 	private String name;
 	private String address;
 	private String paymentMethod;
@@ -79,13 +79,22 @@ public abstract class Employee implements Cloneable{
 		return schedule;
 	}
 	
-	public abstract Object clone();
+	public void clone(Employee from, Employee to){
+		to.setName(from.getName());
+		to.setAddress(from.getAddress());
+		to.setPaymentMethod(from.getPaymentMethod());
+		to.setId(from.getId());
+		to.setNextPaymentValue(from.getNextPaymentValue());
+		to.setNextPaymentDate(from.getNextPaymentDate());
+		to.setUnionInfo((UnionInfo)from.getUnionInfo().clone());
+		to.setSchedule((Schedule)from.getSchedule().clone());
+	}
 
 	@Override
 	public String toString() {
-		return ("Empregado " + name + ", endereço \"" + address + "\", método de pagamento "
-		+ paymentMethod + ", ID " + id + ", próximo contra-cheque de " + 
-		Main.sManager.getPayment(this) + " em " + nextPaymentDate + ", " + unionInfo.toString()) 
-		+ ", calendário de pagamento \"" + schedule.toString() + "\"";
+		return ("Nome: " + name + "\nEndereço: " + address + "\nMétodo de pagamento: "
+		+ paymentMethod + "\nID: " + id + "\nPróximo contra-cheque: " + 
+		Main.sManager.getPayment(this) + " em " + nextPaymentDate + unionInfo.toString()) 
+		+ "\nCalendário de pagamento: " + schedule.toString();
 	}
 }

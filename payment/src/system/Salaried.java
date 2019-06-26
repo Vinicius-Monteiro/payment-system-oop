@@ -18,21 +18,15 @@ public class Salaried extends Employee {
 	public Salaried clone(){
 		Salaried employee = new Salaried(this.getId());
 
-		employee.setName(this.getName());
-		employee.setAddress(this.getAddress());
-		employee.setPaymentMethod(this.getPaymentMethod());
-		employee.setId(this.getId());//handle id abstractly
 		employee.setSalary(this.getSalary());
-		employee.setNextPaymentValue(this.getNextPaymentValue());
-		employee.setNextPaymentDate(this.getNextPaymentDate());
-		employee.setUnionInfo((UnionInfo)this.getUnionInfo().clone());
-		employee.setSchedule((Schedule)this.getSchedule().clone());
+		super.clone(this, employee);
 
 		return employee;
 	}
 
 	@Override
 	public String toString(){
-		return super.toString() + ", salariado, salário mensal " + salary;
+		return (this instanceof Commissioned) ? super.toString() + "\nContrato: Comissionado\nSalário mensal: " + salary: 
+		super.toString() + "\nContrato: Salariado\nSalário mensal: " + salary;
 	}
 }

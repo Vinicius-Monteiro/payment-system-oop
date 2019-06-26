@@ -8,10 +8,10 @@ public class Menu {
 	"Comandos do programa:\n"
 	+"\t[1,10]- Funcionalidades\n"
 	+"\tmanual- Listar funcionalidades do sistema\n"
-	+"\texit- Terminar programa\n"
 	+"\tdate- Mostrar a data atual do sistema\n"
 	+"\tschedules - Agendas de pagamento cadastradas no sistema\n"
-	+"\tprint- Listar empregados no sistema\n";
+	+"\tprint- Listar empregados no sistema\n"
+	+"\texit- Terminar programa\n";
 	
 	private static final String functions = 
 	"Funcionalidades do programa:\n"
@@ -62,7 +62,6 @@ public class Menu {
 		else if(input.equals("date")) System.out.println(Main.payroll.getCalendar());
 		else if(input.equals("schedules")) printSchedules(Main.schedules);
 		else if(input.equals("print")) Main.payroll.printEmployees();
-		else if(input.equals("states")) Main.states.printStacks();
 		else if(input.equals("1")) {
 			System.out.println("Forneça:");
 			System.out.print("\tO tipo do contrato:");
@@ -136,7 +135,7 @@ public class Menu {
 		else if(input.equals("5")) {
 			System.out.println("Forneça:");
 			
-			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
+			Employee e = Main.inputHandler.loadUnionEmployee(Main.payroll, "O id sindical do funcionário:");
 			if(e.getUnionInfo().getBelongs())
 				Main.payroll.getUnion().submitServiceFee(e);
 			else{
@@ -165,6 +164,13 @@ public class Menu {
 				String address = Main.in.nextLine();
 				e.setAddress(address);
 				System.out.println("Endereço alterado");
+			}
+
+			choice = Main.inputHandler.loadOptions("Deseja mudar o método de pagamento ? (y/n):", "y", "n");
+			if(choice){
+				String method = Main.inputHandler.loadPaymentMethod();
+				e.setPaymentMethod(method);;
+				System.out.println("Método de pagamento alterado");
 			}
 			
 			choice = Main.inputHandler.loadOptions("Deseja mudar o tipo do contrato ? (y/n):", "y", "n");
@@ -195,7 +201,6 @@ public class Menu {
 					Main.sManager.copyEmployee(e, n, Main.payroll);
 					double salary = Main.inputHandler.loadDouble("salário mensal:");
 					n.setSalary(salary);
-					n.setNextPaymentValue(n.getSalary());//REMOVER
 					Main.payroll.remove(e.getId());
 					Main.payroll.addEmployee(n);
 					e = n;
@@ -230,12 +235,24 @@ public class Menu {
 				choice = Main.inputHandler.loadOptions("a participação no sindicato ? (y/n):", "y", "n");
 				if(choice){
 					choice = Main.inputHandler.loadOptions("pertence ao sindicato ? (y/n):", "y", "n");
-					if(choice){ 
+					if(choice){
+						if(e.getUnionInfo().getBelongs()){
+							System.out.println("O funcionário já pertence ao sindicato");
+							Main.states.popUndo();
+							return getInput();
+						}
 						e.getUnionInfo().setBelongs(true);
 						e.getUnionInfo().setId(Main.payroll.getUnion().getUnionGlobalID());
 						Main.payroll.getUnion().incrementUnionGlobalID();
 					}
-					else e.getUnionInfo().setBelongs(false);
+					else{
+						if(!e.getUnionInfo().getBelongs()){
+							System.out.println("O funcionário já não pertence ao sindicato");
+							Main.states.popUndo();
+							return getInput();
+						}
+						e.getUnionInfo().setBelongs(false);
+					}
 					System.out.println("Participação alterada");
 				}
 
@@ -287,7 +304,7 @@ public class Menu {
 						System.out.println("\tValor a receber: $" + 
 						Main.sManager.afterDeduction(payment, e.getUnionInfo().getFee()));
 					} else
-						System.out.println("\tValor a receber: $" + payment);
+						System.out.println("\tValor a receber: " + payment);
 					System.out.println("\tMétodo de pagamento: " + e.getPaymentMethod());
 					e.setNextPaymentValue(0);
 					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(Main.payroll));
@@ -343,6 +360,13 @@ public class Menu {
 			for(Schedule e: Main.schedules){
 				if(e.getPaymentSchedule().equals(paymentSchedule)){
 					System.out.println("Essa agenda já existe");
+					return getInput();
+				}
+			}
+			if(paymentSchedule.split(" ")[0].equals("mensal")){
+				int aux = Integer.parseInt(paymentSchedule.split(" ")[1]);
+				if(aux > 28){
+					System.out.println("Alguns meses não têm esse dia\nAgenda inválida");
 					return getInput();
 				}
 			}

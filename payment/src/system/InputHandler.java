@@ -61,6 +61,16 @@ public class InputHandler{
 		}
 	}
 
+	public Employee loadUnionEmployee(Payroll payroll, String required){
+		while(true){
+			int id = Main.inputHandler.loadInt(required);
+			
+			Employee e = payroll.getUnion().searchByID(payroll.getEmployees(), id);
+			if(e != null) return e;
+			else System.out.println("Funcionário não encontrado");
+		}
+	}
+
 	public String loadSchedule(){
 		while(true){
 			System.out.print("\tmensal ou semanal:");
@@ -82,6 +92,28 @@ public class InputHandler{
 					String dayOfTheWeek = Main.in.nextLine();
 					if(convertDayOfTheWeek(dayOfTheWeek) != 0)
 						return type + " " + helper + " " + dayOfTheWeek;
+			}
+			System.out.println("Agenda incorreta");
+		}
+	}
+
+	public String loadPaymentMethod(){
+		while(true){
+			System.out.print("\tMétodos de pagamento:\n"
+			+"\t\t[1] - Cheque em mãos\n"
+			+"\t\t[2] - Cheque pelos correios\n"
+			+"\t\t[3] - Depósito em conta\n");
+				
+			int method = loadInt(":");
+
+			if(method == 1){
+				return "Cheque em mãos";
+			} 
+			else if(method == 2) {
+				return "Cheque pelos correios";
+			}
+			else if(method == 3){
+				return "Depósito em conta";
 			}
 			System.out.println("Agenda incorreta");
 		}

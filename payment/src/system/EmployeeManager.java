@@ -32,8 +32,7 @@ public abstract class EmployeeManager <T extends Employee> {
 		String address = Main.in.nextLine();
 		employee.setAddress(address);
 		
-		System.out.print("\tMétodo de pagamento:");
-		String paymentMethod = Main.in.nextLine();
+		String paymentMethod = Main.inputHandler.loadPaymentMethod();
 		employee.setPaymentMethod(paymentMethod);
 
 		System.out.print("\tO funcionário pertence ao sindicato ?(y/n):");
@@ -52,17 +51,14 @@ public abstract class EmployeeManager <T extends Employee> {
 				return employee.getNextPaymentValue() + ((Salaried)employee).getSalary();
 			else
 				return employee.getNextPaymentValue();
-			//else 
-			//	return ((Salaried)employee).getSalary();
 		}
 		else {
 			double parcelas = Double.parseDouble(employee.getSchedule().getPaymentSchedule().split(" ")[1]);
 			if(parcelas == 1) parcelas = 4;
 			if(employee instanceof Salaried && !(employee instanceof Commissioned))
-				return employee.getNextPaymentValue()/parcelas;
+				return ((Salaried)employee).getSalary()/parcelas;
 			else if(employee instanceof Commissioned){
-				double salary = ((Commissioned)employee).getSalary();
-				return (salary/parcelas) + employee.getNextPaymentValue();
+				return (((Commissioned)employee).getSalary()/parcelas) + employee.getNextPaymentValue();
 			} else
 				return employee.getNextPaymentValue();
 		}

@@ -80,11 +80,11 @@ public class Payroll{
 		ArrayList<Employee> arraylist = new ArrayList<Employee>();
 		for(Employee e: employees){
 			if(e instanceof Salaried && !(e instanceof Commissioned))
-				arraylist.add((Salaried)e.clone());
+				arraylist.add(((Salaried)e).clone());
 			else if(e instanceof Commissioned)
-				arraylist.add((Commissioned)e.clone());
+				arraylist.add(((Commissioned)e).clone());
 			else
-				arraylist.add((Hourly)e.clone());
+				arraylist.add(((Hourly)e).clone());
 		}
 		Union un = (Union)union.clone();
 		Calendar cal = (Calendar)calendar.clone();

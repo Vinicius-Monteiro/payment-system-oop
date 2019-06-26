@@ -22,22 +22,15 @@ public class Commissioned extends Salaried{
 	public Commissioned clone(){
 		Commissioned employee = new Commissioned(this.getId());
 
-		employee.setName(this.getName());
-		employee.setAddress(this.getAddress());
-		employee.setPaymentMethod(this.getPaymentMethod());
-		employee.setId(this.getId());//handle id abstractly
 		employee.setSalary(this.getSalary());
 		employee.setCommission(this.getCommission());
-		employee.setNextPaymentValue(this.getNextPaymentValue());
-		employee.setNextPaymentDate(this.getNextPaymentDate());
-		employee.setUnionInfo((UnionInfo)this.getUnionInfo().clone());
-		employee.setSchedule((Schedule)this.getSchedule().clone());
+		((Employee)employee).clone(this, employee);
 
 		return employee;
 	}
 
 	@Override
 	public String toString(){
-		return super.toString() + ", comissionado, comissão de " + commission + "%";
+		return super.toString() + "\nComissão de: " + commission + "%";
 	}
 }

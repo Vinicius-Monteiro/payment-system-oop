@@ -21,13 +21,13 @@ public class Hourly extends Employee{
 		setNextPaymentValue(getNextPaymentValue() + payment);
 	}
 
-	public static double relativePay(double hourPay, int timeWorked) {
+	public double relativePay(double hourPay, int timeWorked) {
 		double perMinute = hourPay / 60.0;
 		if(timeWorked <= (60 * 8)) return perMinute * timeWorked;
 		else return ((timeWorked - (60 * 8)) * (1.5 * perMinute)) + ((60 * 8) * perMinute);
 	}
 
-	public static int timeToMinutes(int arrivalH, int arrivalM, int exitH, int exitM) {
+	public int timeToMinutes(int arrivalH, int arrivalM, int exitH, int exitM) {
 		int hours = (exitH - arrivalH), mins, total;
 		total = hours * 60;
 		if(exitM < arrivalM) {
@@ -43,21 +43,14 @@ public class Hourly extends Employee{
 	public Hourly clone(){
 		Hourly employee = new Hourly(this.getId());
 
-		employee.setName(this.getName());
-		employee.setAddress(this.getAddress());
-		employee.setPaymentMethod(this.getPaymentMethod());
-		employee.setId(this.getId());//handle id abstractly
 		employee.setHourPay(this.getHourPay());
-		employee.setNextPaymentValue(this.getNextPaymentValue());
-		employee.setNextPaymentDate(this.getNextPaymentDate());
-		employee.setUnionInfo((UnionInfo)this.getUnionInfo().clone());
-		employee.setSchedule((Schedule)this.getSchedule().clone());
+		((Employee)employee).clone(this, employee);
 
 		return employee;
 	}
 
 	@Override
 	public String toString(){
-		return super.toString() + ", horista, salário/hora de " + hourPay;
+		return super.toString() + "\nContrato: Horista\nSalário/hora de: " + hourPay;
 	}
 }
