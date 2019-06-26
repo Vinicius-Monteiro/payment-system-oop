@@ -1,6 +1,16 @@
 package system;
 
 public class InputHandler{
+	public boolean loadOptions(String options, String first, String second){//first = true; second = false
+		while(true){
+			System.out.print("\t" + options);
+			String choice = Main.in.nextLine();
+			if(choice.equals(first)) return true;
+			else if(choice.equals(second)) return false;
+			else System.out.println("Opção incorreta");
+		}
+	}
+
 	public double loadDouble(String required) throws NumberFormatException{
 		while(true){
 			try{

@@ -1,7 +1,7 @@
 package system;
 import java.util.ArrayList;
 
-public class Payroll {
+public class Payroll{
 	private ArrayList<Employee> employees;
 	private Union union = new Union();
 	private Calendar calendar;
@@ -36,6 +36,12 @@ public class Payroll {
 		}
 	}
 
+	public Payroll(ArrayList<Employee> employees, Union union, Calendar calendar){
+		this.employees = employees;
+		this.union = union;
+		this.calendar = calendar;
+	}
+
 	public ArrayList<Employee> getEmployees() {
 		return employees;
 	}
@@ -68,5 +74,20 @@ public class Payroll {
 			System.out.println(e);
 			System.out.println("------------------------");
 		}
+	}
+
+	public Payroll clone(){
+		ArrayList<Employee> arraylist = new ArrayList<Employee>();
+		for(Employee e: employees){
+			if(e instanceof Salaried && !(e instanceof Commissioned))
+				arraylist.add((Salaried)e.clone());
+			else if(e instanceof Commissioned)
+				arraylist.add((Commissioned)e.clone());
+			else
+				arraylist.add((Hourly)e.clone());
+		}
+		Union un = (Union)union.clone();
+		Calendar cal = (Calendar)calendar.clone();
+		return new Payroll(arraylist, un, cal);
 	}
 }

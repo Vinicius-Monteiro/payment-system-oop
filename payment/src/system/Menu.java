@@ -27,7 +27,7 @@ public class Menu {
 	+"\t10- Criacao de novas agendas de pagamento\n";
 	
 	public void printInit(){
-		System.out.print(init);
+		System.out.print("\n" + init + "\n");
 	}
 
 	public void printCommands(){
@@ -44,15 +44,25 @@ public class Menu {
 		}
 	}
 
-	public boolean getInput(Payroll payroll){
+	public boolean getInput(){
 		System.out.print(":");
 		String input = Main.in.nextLine();
 
+		if(Main.inputHandler.isNumeric(input)){
+			int command = Integer.parseInt(input);
+			if(command < 8){
+				Main.states.pushUndo(Main.payroll.clone());
+			}
+			if(command != 8)
+				Main.states.getRedoStack().clear();
+		}
+
 		if(input.equals("manual")) printFunctions();
 		else if(input.equals("exit")) return false;
-		else if(input.equals("date")) System.out.println(payroll.getCalendar());
+		else if(input.equals("date")) System.out.println(Main.payroll.getCalendar());
 		else if(input.equals("schedules")) printSchedules(Main.schedules);
-		else if(input.equals("print")) payroll.printEmployees();
+		else if(input.equals("print")) Main.payroll.printEmployees();
+		else if(input.equals("states")) Main.states.printStacks();
 		else if(input.equals("1")) {
 			System.out.println("Forneça:");
 			System.out.print("\tO tipo do contrato:");
@@ -60,191 +70,213 @@ public class Menu {
 			
 			if(type.equals("salariado")){
 				Salaried employee = new Salaried(Main.sManager.getGlobalId());
-				employee = Main.sManager.createEmployee(employee, payroll);
-				payroll.addEmployee(employee);
+				employee = Main.sManager.createEmployee(employee, Main.payroll);
+				Main.payroll.addEmployee(employee);
 			} 
 			else if(type.equals("comissionado")) {
 				Commissioned employee = new Commissioned(Main.cManager.getGlobalId());
-				employee = Main.cManager.createEmployee(employee, payroll);
-				payroll.addEmployee(employee);
+				employee = Main.cManager.createEmployee(employee, Main.payroll);
+				Main.payroll.addEmployee(employee);
 			} 
 			else if(type.equals("horista")) {
 				Hourly employee = new Hourly(Main.hManager.getGlobalId());
-				employee = Main.hManager.createEmployee(employee, payroll);
-				payroll.addEmployee(employee);
+				employee = Main.hManager.createEmployee(employee, Main.payroll);
+				Main.payroll.addEmployee(employee);
 			} 
 			else {
 				System.out.println("Tipo de contrato incorreto");
-				return getInput(payroll);
+				Main.states.popUndo();
+				return getInput();
 			}
+			System.out.println("Empregado adicionado");
 		} 
 		else if(input.equals("2")) {
 			System.out.println("Forneça:");
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
-			payroll.remove(e.getId());
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
+			Main.payroll.remove(e.getId());
 			System.out.println("Empregado removido");
 		} 
 		else if(input.equals("3")){
 			System.out.println("Forneça:");
 			
 			//checando se o empregado existe e se o casting é válido
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
 			if(e instanceof Hourly){
 				int []arrival = Main.inputHandler.loadInt("A hora de chegada (e.g. 7 30):", 2);
 				int []exit = Main.inputHandler.loadInt("A hora de chegada (e.g. 15 20):", 2);
 				if(Main.inputHandler.checkTime(arrival, exit))
 					((Hourly)e).submitTimeCard(arrival[0], arrival[1], exit[0], exit[1]);
-				else
+				else{
 					System.out.println("Horários invalidos");
-			} else System.out.println("Funcionário não encontrado ou não é horista");
+					Main.states.popUndo();
+					return getInput();
+				}
+			} else {
+				System.out.println("O funcionário não é horista");
+				Main.states.popUndo();
+				return getInput();
+			}
+			System.out.println("Cartão de ponto submetido");
 		} 
 		else if(input.equals("4")){
 			System.out.println("Forneça:");
 			
 			//checando se o empregado existe e se o casting é válido
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
 			if(e instanceof Commissioned){
 				double price = Main.inputHandler.loadDouble("O valor da venda:");
 				((Commissioned)e).submitSale(price);
-			} else System.out.println("O funcionário não é comissionado");
+			} else {
+				System.out.println("O funcionário não é comissionado");
+				Main.states.popUndo();
+				return getInput();
+			}
+			System.out.println("Venda submetida");
 		} 
 		else if(input.equals("5")) {
 			System.out.println("Forneça:");
 			
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
-			if(!e.getUnionInfo().getBelongs())
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
+			if(e.getUnionInfo().getBelongs())
+				Main.payroll.getUnion().submitServiceFee(e);
+			else{
 				System.out.println("O funcionário não pertence ao sindicato");
-			else
-				payroll.getUnion().submitServiceFee(e);
+				Main.states.popUndo();
+				return getInput();
+			}
+			System.out.println("Taxa de serviço submetida");
 		}
 		else if(input.equals("6")) {
 			System.out.println("Forneça:");
 
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
 			
-			System.out.print("\tDeseja mudar o nome ? (y/n):");
-			String choice = Main.in.nextLine();
-			if(choice.equals("y")){
+			boolean choice = Main.inputHandler.loadOptions("Deseja mudar o nome ? (y/n):", "y", "n");
+			if(choice){
 				System.out.print("\tnome:");
 				String name = Main.in.nextLine();
 				e.setName(name);
+				System.out.println("Nome alterado");
 			}
 
-			System.out.print("\tDeseja mudar o endereço ? (y/n):");
-			choice = Main.in.nextLine();
-			if(choice.equals("y")){
+			choice = Main.inputHandler.loadOptions("Deseja mudar o endereço ? (y/n):", "y", "n");
+			if(choice){
 				System.out.print("\tendereço:");
 				String address = Main.in.nextLine();
 				e.setAddress(address);
+				System.out.println("Endereço alterado");
 			}
 			
-			System.out.print("\tDeseja mudar o tipo do contrato ? (y/n):");
-			choice = Main.in.nextLine();
-			if(choice.equals("y")){
+			choice = Main.inputHandler.loadOptions("Deseja mudar o tipo do contrato ? (y/n):", "y", "n");
+			if(choice){
 				System.out.print("\tcontrato (comissionado, horista, salariado):");
 				String contract = Main.in.nextLine();
 				if(e instanceof Salaried && !(e instanceof Commissioned)){
 					if(!contract.equals("comissionado") && !contract.equals("horista")){
 						System.out.println("O funcionário já tem esse contrato");
-						return true;
+						Main.states.popUndo();
+						return getInput();
 					}
 				} else if(e instanceof Commissioned) {
 					if(!contract.equals("salariado") && !contract.equals("horista")){
 						System.out.println("O funcionário já tem esse contrato");
-						return true;
+						Main.states.popUndo();
+						return getInput();
 					}
 				} else if(e instanceof Hourly) {
 					if(!contract.equals("comissionado") && !contract.equals("salariado")){
 						System.out.println("O funcionário já tem esse contrato");
-						return true;
+						Main.states.popUndo();
+						return getInput();
 					}	
 				}
 				if(contract.equals("salariado")){
 					Salaried n = new Salaried(e.getId());
-					Main.sManager.copyEmployee(e, n, payroll);
+					Main.sManager.copyEmployee(e, n, Main.payroll);
 					double salary = Main.inputHandler.loadDouble("salário mensal:");
 					n.setSalary(salary);
 					n.setNextPaymentValue(n.getSalary());//REMOVER
-					payroll.remove(e.getId());
-					payroll.addEmployee(n);
+					Main.payroll.remove(e.getId());
+					Main.payroll.addEmployee(n);
 					e = n;
 				} else if(contract.equals("comissionado")){
 					Commissioned n = new Commissioned(e.getId());
-					Main.cManager.copyEmployee(e, n, payroll);
+					Main.cManager.copyEmployee(e, n, Main.payroll);
 					double salary = Main.inputHandler.loadDouble("salário mensal:");
 					double commission = Main.inputHandler.loadDouble("comissão:");
 					n.setSalary(salary);
 					n.setCommission(commission);
-					payroll.remove(e.getId());
-					payroll.addEmployee(n);
+					Main.payroll.remove(e.getId());
+					Main.payroll.addEmployee(n);
 					e = n;
 				} else if(contract.equals("horista")){
 					Hourly n = new Hourly(e.getId());
-					Main.hManager.copyEmployee(e, n, payroll);
+					Main.hManager.copyEmployee(e, n, Main.payroll);
 					double hourPay = Main.inputHandler.loadDouble("salário por hora:");
 					n.setHourPay(hourPay);
-					payroll.remove(e.getId());
-					payroll.addEmployee(n);
+					Main.payroll.remove(e.getId());
+					Main.payroll.addEmployee(n);
 					e = n;
-				} else
+				} else {
 					System.out.println("Contrato inválido");
+					Main.states.popUndo();
+					return getInput();
+				}
+				System.out.println("Contrato alterado");
 			}
 
-			System.out.print("\tdeseja mudar alguma informação sindical ? (y/n):");
-			choice = Main.in.nextLine();
-			if(choice.equals("y")){
-				System.out.print("\ta participação no sindicato ? (y/n):");
-				String change = Main.in.nextLine();
-				if(change.equals("y")){
-					System.out.print("\tpertence ao sindicato ? (y/n):");
-					String belongs = Main.in.nextLine();
-					if(belongs.equals("y")){ 
+			choice = Main.inputHandler.loadOptions("deseja mudar alguma informação sindical ? (y/n):", "y", "n");
+			if(choice){
+				choice = Main.inputHandler.loadOptions("a participação no sindicato ? (y/n):", "y", "n");
+				if(choice){
+					choice = Main.inputHandler.loadOptions("pertence ao sindicato ? (y/n):", "y", "n");
+					if(choice){ 
 						e.getUnionInfo().setBelongs(true);
-						e.getUnionInfo().setId(payroll.getUnion().getUnionGlobalID());
-						payroll.getUnion().incrementUnionGlobalID();
+						e.getUnionInfo().setId(Main.payroll.getUnion().getUnionGlobalID());
+						Main.payroll.getUnion().incrementUnionGlobalID();
 					}
-					else if(belongs.equals("n")) e.getUnionInfo().setBelongs(false);
-					else{
-						System.out.println("Opção inválido");
-					}
+					else e.getUnionInfo().setBelongs(false);
+					System.out.println("Participação alterada");
+				}
 
-					System.out.print("\ta identificação no sindicato ? (y/n):");
-					String idChoice = Main.in.nextLine();
-					if(idChoice.equals("y")){
-						int id = Main.inputHandler.loadInt("id:");
-						for(Employee aux: payroll.getEmployees()){
-							while(aux.getUnionInfo().getBelongs() && aux.getUnionInfo().getId() == id){
-								id = Main.inputHandler.loadInt("id:");
-							}
+				choice = Main.inputHandler.loadOptions("a identificação no sindicato ? (y/n):", "y", "n");
+				if(choice){
+					int id = Main.inputHandler.loadInt("id:");
+					for(Employee aux: Main.payroll.getEmployees()){
+						while(aux.getUnionInfo().getBelongs() && aux.getUnionInfo().getId() == id
+						&& e.getId() != aux.getId()){
+							System.out.println("Outro sindicalista já detém essa identificação");
+							id = Main.inputHandler.loadInt("forneça outro id:");
 						}
-						e.getUnionInfo().setId(id);
 					}
+					e.getUnionInfo().setId(id);
+					System.out.println("Identificação no sindicato alterada");
+				}
 
-					System.out.print("\ta taxa sindical ? (y/n):");
-					String feeChoice = Main.in.nextLine();
-					if(feeChoice.equals("y")){
-						double fee = Main.inputHandler.loadDouble("taxa sindical:");
-						e.getUnionInfo().setFee(fee);
-					}
+				choice = Main.inputHandler.loadOptions("a taxa sindical ? (y/n):", "y", "n");
+				if(choice){
+					double fee = Main.inputHandler.loadDouble("taxa sindical:");
+					e.getUnionInfo().setFee(fee);
+					System.out.println("Taxa sindical alterada");
 				}
 			}
 		} 
 		else if(input.equals("7")){
-			String oldDay = payroll.getCalendar().toString();
+			String oldDay = Main.payroll.getCalendar().toString();
 			System.out.println("Rodando a folha de pagamento para o dia " + oldDay);
 
-			String nextDay = payroll.getCalendar().nextDay();
+			String nextDay = Main.payroll.getCalendar().nextDay();
 			if(nextDay.equals("0/0")){
-				int lastDayOfTheYear = payroll.getCalendar().getYear()[12][31];
+				int lastDayOfTheYear = Main.payroll.getCalendar().getYear()[12][31];
 				if(++lastDayOfTheYear == 8) lastDayOfTheYear = 1;
-				Calendar nextYear = new Calendar(1, 1, payroll.getCalendar().getCurrentYear() + 1, lastDayOfTheYear);
-				payroll.setCalendar(nextYear);
+				Calendar nextYear = new Calendar(1, 1, Main.payroll.getCalendar().getCurrentYear() + 1, lastDayOfTheYear);
+				Main.payroll.setCalendar(nextYear);
 			} else {
-				payroll.getCalendar().setCurrentDay(Integer.parseInt(nextDay.split("/")[0]));
-				payroll.getCalendar().setCurrentMonth(Integer.parseInt(nextDay.split("/")[1]));
+				Main.payroll.getCalendar().setCurrentDay(Integer.parseInt(nextDay.split("/")[0]));
+				Main.payroll.getCalendar().setCurrentMonth(Integer.parseInt(nextDay.split("/")[1]));
 			}
 
-			for(Employee e: payroll.getEmployees()){
+			for(Employee e: Main.payroll.getEmployees()){
 				if(e.getNextPaymentDate().equals(oldDay)){
 					double payment = Main.sManager.getPayment(e);
 					System.out.println("\t---------------------");
@@ -258,18 +290,38 @@ public class Menu {
 						System.out.println("\tValor a receber: $" + payment);
 					System.out.println("\tMétodo de pagamento: " + e.getPaymentMethod());
 					e.setNextPaymentValue(0);
-					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
+					e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(Main.payroll));
 					System.out.println("\tEmpregado pago.");
 					System.out.println("\t---------------------");
 				}
 			}
 
 			System.out.println("Todos os empregados foram pagos.");
-			System.out.println("O dia de hoje agora é " + payroll.getCalendar().toString());
+			System.out.println("A data de hoje agora é " + Main.payroll.getCalendar().toString());
+		}
+		else if(input.equals("8")){
+			boolean choice = Main.inputHandler.loadOptions("undo ou redo:", "undo", "redo");
+			Payroll aux;
+			String op;
+			if(choice){
+				aux = Main.states.popUndo();
+				if(aux != null) Main.states.pushRedo(Main.payroll.clone());
+				op = "Undo";
+			} else {
+				aux = Main.states.popRedo();
+				op = "Redo";
+				if(aux != null) Main.states.pushUndo(Main.payroll.clone());
+			}
+			if(aux != null) Main.payroll = aux;
+			else {
+				System.out.println("A operação não pode ser realizada. (Pilha vazia)");
+				return getInput();
+			}
+			System.out.println(op + " realizado");
 		}
 		else if(input.equals("9")){
 			System.out.println("Forneça:");
-			Employee e = Main.inputHandler.loadEmployee(payroll, "O id do funcionário:");
+			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
 			
 			System.out.println("Escolha uma das seguintes agendas:");
 			printSchedules(Main.schedules);
@@ -277,10 +329,12 @@ public class Menu {
 
 			if(choice >= 1 && choice <= Main.schedules.size()){
 				e.setSchedule(Main.schedules.get(choice - 1));
-				e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(payroll));
+				e.setNextPaymentDate(e.getSchedule().calculatePaymentDate(Main.payroll));
 			} else {
 				System.out.println("Opção inválida");
+				return getInput();
 			}
+			System.out.println("Agenda de pagamento alterada");
 		}
 		else if(input.equals("10")){
 			System.out.println("Forneça a agenda de pagamento:");
@@ -289,14 +343,15 @@ public class Menu {
 			for(Schedule e: Main.schedules){
 				if(e.getPaymentSchedule().equals(paymentSchedule)){
 					System.out.println("Essa agenda já existe");
-					return true;
+					return getInput();
 				}
 			}
 			Main.schedules.add(new Schedule(paymentSchedule));
+			System.out.println("Agenda de pagamento criada");
 		}
 		else {
 			System.out.println("Forneça um comando válido");
-			return getInput(payroll);
+			return getInput();
 		}
 
 		return true;

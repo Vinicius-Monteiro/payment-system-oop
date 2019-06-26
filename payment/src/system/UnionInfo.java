@@ -1,6 +1,6 @@
 package system;
 
-public class UnionInfo {
+public class UnionInfo implements Cloneable{
 	private boolean belongs;
 	private int id;
 	private double fee;
@@ -27,6 +27,14 @@ public class UnionInfo {
 
 	public double getFee(){
 		return this.fee;
+	}
+
+	public Object clone(){
+		try{
+			return super.clone();
+		} catch(CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	public String toString(){

@@ -14,6 +14,22 @@ public class Salaried extends Employee {
 	public double getSalary(){
 		return salary;
 	}
+	
+	public Salaried clone(){
+		Salaried employee = new Salaried(this.getId());
+
+		employee.setName(this.getName());
+		employee.setAddress(this.getAddress());
+		employee.setPaymentMethod(this.getPaymentMethod());
+		employee.setId(this.getId());//handle id abstractly
+		employee.setSalary(this.getSalary());
+		employee.setNextPaymentValue(this.getNextPaymentValue());
+		employee.setNextPaymentDate(this.getNextPaymentDate());
+		employee.setUnionInfo((UnionInfo)this.getUnionInfo().clone());
+		employee.setSchedule((Schedule)this.getSchedule().clone());
+
+		return employee;
+	}
 
 	@Override
 	public String toString(){

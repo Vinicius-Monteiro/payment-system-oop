@@ -1,6 +1,6 @@
 package system;
 
-public class Calendar{
+public class Calendar implements Cloneable{
 	private int currentDay;
 	private int currentMonth;
 	private int currentYear;
@@ -89,6 +89,14 @@ public class Calendar{
 		i = 0;
 		j = 0;
 		return Integer.toString(j) + "/" + Integer.toString(i);
+	}
+
+	public Object clone(){
+		try{
+			return super.clone();
+		} catch(CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	@Override

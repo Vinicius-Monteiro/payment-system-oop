@@ -1,10 +1,10 @@
 package system;
 
-public abstract class Employee {
+public abstract class Employee implements Cloneable{
 	private String name;
 	private String address;
 	private String paymentMethod;
-	private final int id;//handle id abstractly
+	private int id;//handle id abstractly
 	private double nextPaymentValue;
 	private String nextPaymentDate;
 	private UnionInfo unionInfo = new UnionInfo();
@@ -23,6 +23,10 @@ public abstract class Employee {
 		this.address = address;	
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public void setPaymentMethod(String paymentMethod){
 		this.paymentMethod = paymentMethod;
 	}
@@ -38,7 +42,11 @@ public abstract class Employee {
 	public void setSchedule(Schedule schedule) {
 		this.schedule = schedule;
 	}
-	
+
+	public void setUnionInfo(UnionInfo unionInfo) {
+		this.unionInfo = unionInfo;
+	}
+
 	public String getName(){
 		return name;
 	}
@@ -70,6 +78,8 @@ public abstract class Employee {
 	public Schedule getSchedule() {
 		return schedule;
 	}
+	
+	public abstract Object clone();
 
 	@Override
 	public String toString() {

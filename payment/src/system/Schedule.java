@@ -70,6 +70,10 @@ public class Schedule {
 		}
 	}
 
+	public Object clone(){
+		return new Schedule(this.getPaymentSchedule());
+	}
+
 	@Override
 	public String toString() {
 		return paymentSchedule;
