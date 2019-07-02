@@ -11,7 +11,7 @@ public class InputHandler{
 		}
 	}
 
-	public double loadDouble(String required) throws NumberFormatException{
+	public double loadDouble(String required){
 		while(true){
 			try{
 				System.out.print("\t" + required);
@@ -22,7 +22,7 @@ public class InputHandler{
 		}
 	}
 
-	public int loadInt(String required) throws NumberFormatException{
+	public int loadInt(String required){
 		while(true){
 			try{
 				System.out.print("\t" + required);
@@ -33,7 +33,7 @@ public class InputHandler{
 		}
 	}
 
-	public int[] loadInt(String required, int size) throws NumberFormatException{
+	public int[] loadInt(String required, int size){
 		int i = 0;
 		int []array = new int[size];
 		System.out.print("\t" + required);

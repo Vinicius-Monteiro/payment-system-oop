@@ -4,7 +4,7 @@ public abstract class Employee{
 	private String name;
 	private String address;
 	private String paymentMethod;
-	private int id;//handle id abstractly
+	private int id;
 	private double nextPaymentValue;
 	private String nextPaymentDate;
 	private UnionInfo unionInfo = new UnionInfo();

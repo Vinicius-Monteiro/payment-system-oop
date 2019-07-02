@@ -30,33 +30,4 @@ public class StatesRestorer{
 		if(!redoStack.empty()) return redoStack.pop();
 		else return null;
 	}
-
-	public void printStacks(){
-		System.out.println("-----Pilha de undos-----");
-		if(undoStack.empty()){
-			System.out.println("Pilha vazia");
-		} else {
-			for(int i = 0; i < undoStack.size(); i++){
-				System.out.println("///////////////////////");
-				System.out.println("Elemento " + i + " da pilha");
-				System.out.println("Dia " + undoStack.get(i).getCalendar().toString());
-				System.out.println("Sindicato id global " + undoStack.get(i).getUnion().getUnionGlobalID());
-				undoStack.get(i).printEmployees();
-				System.out.println("///////////////////////");
-			}
-		}
-		System.out.println("-----Pilha de redos-----");
-		if(redoStack.empty()){
-			System.out.println("Pilha vazia");
-		} else {
-			for(int i = 0; i < redoStack.size(); i++){
-				System.out.println("///////////////////////");
-				System.out.println("Elemento " + i + " da pilha");
-				System.out.println("Dia " + redoStack.get(i).getCalendar().toString());
-				System.out.println("Sindicato id global " + redoStack.get(i).getUnion().getUnionGlobalID());
-				redoStack.get(i).printEmployees();
-				System.out.println("///////////////////////");
-			}
-		}
-    }
 }

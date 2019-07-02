@@ -58,9 +58,9 @@ public class Menu {
 		}
 
 		if(input.equals("manual")) printFunctions();
-		else if(input.equals("exit")) return false;
-		else if(input.equals("date")) System.out.println(Main.payroll.getCalendar());
-		else if(input.equals("schedules")) printSchedules(Main.schedules);
+		else if(input.equals("sair")) return false;
+		else if(input.equals("data")) System.out.println(Main.payroll.getCalendar());
+		else if(input.equals("agendas")) printSchedules(Main.schedules);
 		else if(input.equals("print")) Main.payroll.printEmployees();
 		else if(input.equals("1")) {
 			System.out.println("Forneça:");
@@ -92,7 +92,7 @@ public class Menu {
 		else if(input.equals("2")) {
 			System.out.println("Forneça:");
 			Employee e = Main.inputHandler.loadEmployee(Main.payroll, "O id do funcionário:");
-			Main.payroll.remove(e.getId());
+			Main.payroll.removeEmployee(e.getId());
 			System.out.println("Empregado removido");
 		} 
 		else if(input.equals("3")){
@@ -201,7 +201,7 @@ public class Menu {
 					Main.sManager.copyEmployee(e, n, Main.payroll);
 					double salary = Main.inputHandler.loadDouble("salário mensal:");
 					n.setSalary(salary);
-					Main.payroll.remove(e.getId());
+					Main.payroll.removeEmployee(e.getId());
 					Main.payroll.addEmployee(n);
 					e = n;
 				} else if(contract.equals("comissionado")){
@@ -211,7 +211,7 @@ public class Menu {
 					double commission = Main.inputHandler.loadDouble("comissão:");
 					n.setSalary(salary);
 					n.setCommission(commission);
-					Main.payroll.remove(e.getId());
+					Main.payroll.removeEmployee(e.getId());
 					Main.payroll.addEmployee(n);
 					e = n;
 				} else if(contract.equals("horista")){
@@ -219,7 +219,7 @@ public class Menu {
 					Main.hManager.copyEmployee(e, n, Main.payroll);
 					double hourPay = Main.inputHandler.loadDouble("salário por hora:");
 					n.setHourPay(hourPay);
-					Main.payroll.remove(e.getId());
+					Main.payroll.removeEmployee(e.getId());
 					Main.payroll.addEmployee(n);
 					e = n;
 				} else {

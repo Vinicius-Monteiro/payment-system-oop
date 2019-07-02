@@ -62,7 +62,7 @@ public class Payroll{
 		employees.add(employee);
 	}
 
-	public void remove(int id){
+	public void removeEmployee(int id){
 		if(Main.sManager.searchByID(employees, id) != null){
 			employees.remove(Main.sManager.searchByID(employees, id));
 		} else System.out.println("Empregado não encontrado");
