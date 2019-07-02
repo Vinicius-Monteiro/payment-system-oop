@@ -8,10 +8,10 @@ public class Menu {
 	"Comandos do programa:\n"
 	+"\t[1,10]- Funcionalidades\n"
 	+"\tmanual- Listar funcionalidades do sistema\n"
-	+"\tdate- Mostrar a data atual do sistema\n"
-	+"\tschedules - Agendas de pagamento cadastradas no sistema\n"
+	+"\tdata- Mostrar a data atual do sistema\n"
+	+"\tagendas - Agendas de pagamento cadastradas no sistema\n"
 	+"\tprint- Listar empregados no sistema\n"
-	+"\texit- Terminar programa\n";
+	+"\tsair- Terminar programa\n";
 	
 	private static final String functions = 
 	"Funcionalidades do programa:\n"
